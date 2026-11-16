@@ -63,22 +63,19 @@ export const INITIAL_ASSISTANT_MESSAGES: AssistantChatMessage[] = [
   {
     id: 'msg-welcome',
     sender: 'assistant',
-    text: `👋 **Welcome to your AI Credit & Project Roadmap Architect!**
+    text: `👋 **Welcome to your AI Project & Credit Roadmap Architect!**
 
-Whether you want to build a project with **100% Free Credits ($0 total cost)** or you have **active subscriptions** that you want to optimize without burning allowances, I will build your custom roadmap.
+Tell me about your project, and I will show you how to complete it:
+1. 🪙 **100% Free Credits Mode**: Full step-by-step roadmap using Google AI Studio (1,500 RPD), Groq (14,400 RPD), Supabase, and Vercel for **$0.00**.
+2. 💳 **Hybrid Subscription Mode**: If you have Claude Pro, Cursor, or ChatGPT Plus, I'll explain how to use them for high-value architecture without burning your monthly limits.
+3. ⚡ **Token-Saving Playbook**: Practical tricks (prompt batching, caching, fallback routing) to never run out of credits or get billed.
 
-**What I can do for you:**
-1. 🗺️ **Generate a Complete Project Roadmap**: Tailored specifically for web apps, SaaS, mobile apps, or chatbots.
-2. 🪙 **Free-Tier Orchestration**: Map each development step to generous free tiers (Google AI Studio, Groq, Supabase, Vercel, DeepSeek).
-3. 💳 **Subscription Optimization**: If you pay for Claude Pro, Cursor, or ChatGPT Plus, I'll show you what to build with your subscription vs. what to offload to free tiers.
-4. 💡 **Credit-Saving Tactics**: Teach you prompt caching, batching, and fallback routing to never hit quota walls.
-
-Select your project type above or ask me any question below!`,
+Choose your settings above or ask me any question below!`,
     timestamp: 'Just now',
     suggestedFollowUps: [
-      'How can I build a SaaS backend 100% free?',
+      'How can I build my app completely with free credits?',
       'I ran out of Claude Pro messages. What is the best free fallback?',
-      'How do I build an AI chatbot without paying OpenAI API bills?'
+      'How do I use Google AI Studio and Groq together for $0?'
     ]
   }
 ];
@@ -95,7 +92,6 @@ export function generateProjectRoadmap(
   const hasMidjourney = activeSubscriptions.includes('midjourney-standard');
   const hasElevenLabs = activeSubscriptions.includes('elevenlabs-starter');
 
-  // Customize based on project type
   const typeTitles: Record<ProjectType, string> = {
     saas: 'Full-Stack AI SaaS Platform',
     mobile: 'Cross-Platform Mobile App (iOS / Android)',
@@ -141,7 +137,7 @@ export function generateProjectRoadmap(
         }
       ],
       actionSteps: [
-        'Write a detailed single-prompt System Architecture Document describing every table and endpoint.',
+        `Write a single comprehensive prompt defining all tables and endpoints for "${projectTitle}".`,
         'Batch all database schema questions into one prompt instead of back-and-forth micro-chats.',
         'Export frontend UI mockups and color palette tokens directly into Tailwind CSS classes.'
       ],
@@ -260,7 +256,7 @@ export function generateProjectRoadmap(
       actionSteps: [
         'Deploy the frontend to GitHub Pages or Vercel with automated CI/CD workflows.',
         'Set up Cloudflare free DDOS protection and edge response caching.',
-        'Publish the downloadable Android APK (`ai-credit-guide.apk`) to GitHub Releases for direct mobile installation.'
+        'Enable Progressive Web App (PWA) manifest so users can install it directly to their home screen like a native app.'
       ],
       creditOptimization: [
         'Set up automated usage alerts in Google AI Studio to notify you before any unexpected paid threshold.',
@@ -305,92 +301,161 @@ export function generateProjectRoadmap(
   };
 }
 
-export function answerAssistantQuestion(question: string, activeSubs: string[] = []): string {
+export function answerAssistantQuestion(
+  question: string,
+  activeSubs: string[] = [],
+  projectTitle: string = 'your project',
+  budgetType: BudgetType = 'free-only'
+): string {
   const q = question.toLowerCase();
 
-  if (q.includes('saas') || q.includes('backend') || q.includes('free tier') || q.includes('database')) {
-    return `### 🚀 Building a Full-Stack SaaS for $0.00
+  if (q.includes('saas') || q.includes('backend') || q.includes('free tier') || q.includes('database') || q.includes('app completely')) {
+    return `### 🚀 Building "${projectTitle}" for $0.00 (100% Free Credits)
 
-You can easily run a complete production SaaS on generous developer free tiers:
+Here is your exact zero-cost architecture playbook:
 
-1. **Frontend**: Vite + React deployed to **Vercel** or **GitHub Pages** (Free, 100 GB bandwidth).
-2. **Database & Auth**: **Supabase Free Tier** (500 MB Postgres database + 50,000 monthly active users).
-3. **Primary LLM Engine**: **Google AI Studio (Gemini 1.5 Flash)**
-   - Quota: **15 RPM, 1,500 Requests/Day, 1M Tokens/Min** — 100% free with zero credit card required!
-4. **Fast UI Streaming & Fallback**: **Groq Cloud (Llama 3.3 70B)**
-   - Quota: **30 RPM, 14,400 Requests/Day** with sub-300ms latency.
-5. **Serverless API**: **Cloudflare Workers** (100,000 free requests per day).
+1. **Frontend Hosting**: **Vercel** or **GitHub Pages** (Free, 100 GB bandwidth, SSL included).
+2. **Database & Authentication**: **Supabase Free Tier**
+   - Free Postgres database (500 MB) + 50,000 monthly active users + Row Level Security.
+3. **Primary AI Engine**: **Google AI Studio (Gemini 1.5 Flash)**
+   - **Allowance**: **15 RPM, 1,500 Requests/Day, 1M Tokens/Minute** — 100% free with no credit card required!
+4. **Fast UI Streaming & Redundancy**: **Groq Cloud (Llama 3.3 70B)**
+   - **Allowance**: **30 RPM, 14,400 Requests/Day** with sub-300ms response time.
+5. **Serverless API Routes**: **Cloudflare Workers** (100,000 free requests per day).
 
-💡 **Pro Tip**: Use a simple client-side cache so repeat user queries don't consume your daily 1,500 requests!`;
+💡 **How to Never Run Out**:
+- Route high-volume chats to Gemini Flash.
+- If Gemini reaches 15 RPM, automatically failover to Groq Llama 3.3.
+- Cache common questions in Supabase or localStorage so you never pay twice for the same prompt!`;
   }
 
   if (q.includes('claude') || q.includes('ran out') || q.includes('limit') || q.includes('message cap')) {
     return `### ⏱️ How to Handle Claude Pro Message Caps & Rolling Resets
 
-Claude uses a **5-hour rolling reset window** from the time you send your first message in a block. When you hit the limit:
+Claude uses a **5-hour rolling reset window** from the moment you send your first message in a block.
 
-1. **Best Immediate Zero-Cost Fallback**: Switch to **Google AI Studio with Gemini 1.5 Pro or Flash**.
-   - Gemini 1.5 Pro has a 2M token context window and high coding reasoning, completely free for up to 50 queries/day.
-2. **Second Fallback**: **DeepSeek-V3 / R1** on web (free) or API (5M tokens free).
-3. **How to Double Your Claude Output**:
-   - **Batch your requests**: Instead of asking 5 separate small questions, write one numbered prompt with all your requirements. That counts as only 1 message from your quota!
+1. **Immediate Free Fallback**:
+   - Switch to **Google AI Studio with Gemini 1.5 Pro**. It offers a **2M token context window** and high reasoning, completely free for up to 50 requests/day.
+   - For fast coding help, use **DeepSeek-V3 web** (free) or **Groq Cloud (Llama 3.3 70B)**.
+2. **How to Double Your Claude Output**:
+   - **Batch your prompts**: Instead of 5 separate small questions, write one numbered prompt with all requirements. That burns only **1 message** from your quota!
    - Turn off Claude web Artifacts auto-runs if you just need raw text.`;
   }
 
-  if (q.includes('image') || q.includes('midjourney') || q.includes('dall-e') || q.includes('logo')) {
+  if (q.includes('groq') || q.includes('google ai studio') || q.includes('together') || q.includes('fallback')) {
+    return `### ⚡ The Gemini + Groq Multi-Provider Free Stack
+
+This is the secret weapon used by smart indie hackers to run AI apps for $0.00:
+
+1. **Primary**: **Google AI Studio (Gemini 1.5 Flash)**
+   - 1,500 Requests Per Day.
+   - 1,000,000 token context window.
+   - Handles text, images, video, PDFs, and audio.
+2. **Fallback**: **Groq Cloud (Llama 3.3 70B)**
+   - 14,400 Requests Per Day.
+   - Ultra-fast (300+ tokens/second).
+3. **Failover Code Pattern**:
+\`\`\`javascript
+async function callAI(prompt) {
+  try {
+    return await callGeminiFlash(prompt);
+  } catch (err) {
+    if (err.status === 429) {
+      // Rate limit hit! Switch to Groq instantly:
+      return await callGroqLlama(prompt);
+    }
+    throw err;
+  }
+}
+\`\`\`
+Result: Your app practically **never runs out of free requests**!`;
+  }
+
+  if (q.includes('image') || q.includes('midjourney') || q.includes('logo')) {
     return `### 🎨 Best Free AI Image Generation Strategies
 
-If you don't have Midjourney or DALL-E 3:
-
-1. **Ideogram**: Gives **10 free credits daily**. Superb at rendering legible text in logos, posters, and UI graphics.
-2. **Leonardo.Ai**: Gives **150 free fast tokens every single day**. Great for game assets, app icons, and photorealistic portraits.
-3. **Recraft.ai**: Generates clean vector SVG icons, 3D illustrations, and brand palettes with a daily free quota.
-4. **Hugging Face Spaces**: Run open-weights models like FLUX.1 Schnell for zero cost.`;
+1. **Ideogram**: **10 free credits daily**. Generates the clearest typography and text in logos, banners, and icons.
+2. **Leonardo.Ai**: **150 free fast tokens every day**. Ideal for UI icons, character art, and photorealistic assets.
+3. **Recraft.ai**: Generates clean vector SVG icons and color palettes with a daily free quota.
+4. **Hugging Face Spaces**: Run FLUX.1 Schnell with zero subscription fees.`;
   }
 
-  if (q.includes('audio') || q.includes('voice') || q.includes('music') || q.includes('elevenlabs')) {
-    return `### 🎙️ Free AI Voiceover & Music Generation
+  if (q.includes('audio') || q.includes('voice') || q.includes('elevenlabs')) {
+    return `### 🎙️ Free AI Voiceover & Audio Options
 
-1. **ElevenLabs Free Tier**:
-   - Gives **10,000 characters per month** (~10-12 minutes of studio-grade narration).
-   - If you have an academic \`.edu\` email, you can get an extra 5,000 characters free.
-2. **Browser Native Speech Synthesis (Web Speech API)**:
-   - Built into all modern browsers: 100% free, unlimited, zero latency.
-3. **Suno AI**:
-   - 50 free credits daily (~10 songs or background jingles).
-4. **Hugging Face Edge-TTS**:
-   - Generates Microsoft Edge natural neural voices with zero billing.`;
+1. **ElevenLabs Free**: **10,000 characters per month** (~12 minutes of studio-grade narration). Students with a \`.edu\` email get an additional 5,000 chars.
+2. **Web Speech API**: Browser-native text-to-speech. 100% free, unlimited, zero latency, runs offline.
+3. **Suno AI**: **50 free credits daily** for background music and intro jingles.`;
   }
 
-  if (q.includes('cursor') || q.includes('copilot') || q.includes('code') || q.includes('editor')) {
-    return `### 💻 Free AI Code Editor Setup
-
-If you don't want to pay $20/month for Cursor:
-
-1. **Continue.dev (VS Code Extension)**:
-   - Connect it to your free **Google AI Studio Gemini 1.5 Flash API key**.
-   - Result: You get an in-editor AI coding assistant with 1M context window and 1,500 daily requests for **$0.00**!
-2. **Supermaven Free**:
-   - Lightning-fast inline autocomplete with 300,000 token context window.
-3. **Codeium Free**:
-   - Unlimited individual tab autocomplete across 70+ programming languages.`;
-  }
-
-  return `### 💡 AI Credit Optimization Strategy for Your Project
-
-For your query regarding **"${question}"**:
+  return `### 💡 AI Credit Strategy for "${question}"
 
 1. **Zero-Cost Foundation**:
-   - Start development using **Google AI Studio (Gemini 1.5 Flash)** which provides **1,500 requests/day completely free** with no credit card required.
-   - For real-time streaming and fast responses, use **Groq Cloud (Llama 3.3 70B)** which gives you **14,400 free requests/day**.
+   - Build using **Google AI Studio (Gemini 1.5 Flash)**: **1,500 requests/day completely free** with no credit card required.
+   - Pair with **Groq Cloud**: **14,400 free requests/day** for ultra-fast streaming.
 
 2. **Smart Token Conservation**:
-   - Strip redundant markdown greetings from your prompts.
-   - Always declare explicit JSON schemas or TypeScript interfaces so the model doesn't generate lengthy unnecessary prose.
+   - Strip redundant markdown greetings from your system prompts.
+   - Specify strict TypeScript/JSON schemas so the model never generates conversational filler.
    - Cache static documents (context caching saves up to 75% on large prompts).
 
-3. **When to Upgrade to Paid**:
-   - Only pay for AI subscriptions or API credits once your project has live daily active users or generates commercial income.
+3. **When to Upgrade**:
+   - Stay 100% on free credits during development and testing. Only purchase paid plans once your application generates commercial revenue!
 
-Would you like me to generate a complete phased roadmap for your specific application?`;
+Would you like me to generate a tailored 4-phase implementation plan for this?`;
+}
+
+export async function queryAiAssistant(
+  prompt: string,
+  projectContext: {
+    title: string;
+    type: ProjectType;
+    budget: BudgetType;
+    subs: string[];
+  },
+  apiKey?: string
+): Promise<string> {
+  if (apiKey && apiKey.trim()) {
+    try {
+      const response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey.trim()}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [
+              {
+                role: 'user',
+                parts: [
+                  {
+                    text: `You are the Credit Guider AI Architect. The user is asking about their project: "${projectContext.title || 'AI Project'}" (${projectContext.type}).
+Budget Strategy: ${projectContext.budget === 'free-only' ? '100% Free Credits Only ($0 Budget)' : 'Hybrid Plan with paid subscriptions: ' + projectContext.subs.join(', ')}.
+
+Your role:
+1. Explain how to complete their project using generous free tiers (Google AI Studio 1,500 RPD, Groq Cloud 14,400 RPD, Supabase, Vercel).
+2. Explain how to use credits efficiently without running out or hitting rate limits (prompt batching, caching, fallback routing).
+3. If they have paid subscriptions, explain what to use them for (architecture/heavy coding) and what to offload to free tiers.
+
+Format with clear markdown headings, numbered steps, and concise actionable bullet points.
+User question: ${prompt}`
+                  }
+                ]
+              }
+            ]
+          })
+        }
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+        const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (text) return text;
+      }
+    } catch (err) {
+      console.warn('Gemini API call error, falling back to local engine:', err);
+    }
+  }
+
+  // Fallback to built-in smart engine
+  return answerAssistantQuestion(prompt, projectContext.subs, projectContext.title, projectContext.budget);
 }

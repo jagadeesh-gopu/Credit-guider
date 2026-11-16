@@ -1,11 +1,12 @@
 import React from 'react';
-import { Coins, Compass, Calculator, Sparkles, BookOpen, Newspaper, Moon, Sun, Download, Github } from 'lucide-react';
+import { Coins, Compass, Calculator, Sparkles, BookOpen, Newspaper, Moon, Sun, Smartphone, Github } from 'lucide-react';
 
 interface NavbarProps {
   currentTab: 'explore' | 'calculator' | 'assistant' | 'guides' | 'news';
   setCurrentTab: (tab: 'explore' | 'calculator' | 'assistant' | 'guides' | 'news') => void;
   darkMode: boolean;
   setDarkMode: (val: boolean) => void;
+  onOpenInstallModal: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -13,6 +14,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   setCurrentTab,
   darkMode,
   setDarkMode,
+  onOpenInstallModal,
 }) => {
   return (
     <header className="sticky top-0 z-40 border-b border-gray-200 dark:border-gray-800 bg-white/90 dark:bg-gray-900/90 backdrop-blur-md transition-colors">
@@ -101,16 +103,15 @@ export const Navbar: React.FC<NavbarProps> = ({
 
         {/* Right Actions */}
         <div className="flex items-center gap-2">
-          {/* APK Download Button */}
-          <a
-            href="/ai-credit-guide.apk"
-            download="ai-credit-guide.apk"
-            className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 hover:bg-emerald-100 transition-colors"
-            title="Download Android APK package"
+          {/* Native Install App Button */}
+          <button
+            onClick={onOpenInstallModal}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white shadow-xs transition-all"
+            title="Install as native standalone app (no browser bar, zero harmful warnings)"
           >
-            <Download className="w-3.5 h-3.5" />
-            <span>Download APK</span>
-          </a>
+            <Smartphone className="w-3.5 h-3.5" />
+            <span>Install App</span>
+          </button>
 
           {/* GitHub Repo Link */}
           <a

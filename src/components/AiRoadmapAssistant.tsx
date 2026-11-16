@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   ProjectType, 
   BudgetType, 
@@ -9,7 +9,7 @@ import {
   AVAILABLE_SUBSCRIPTIONS, 
   INITIAL_ASSISTANT_MESSAGES, 
   generateProjectRoadmap, 
-  answerAssistantQuestion 
+  queryAiAssistant 
 } from '../data/assistantData';
 import { 
   Sparkles, 
@@ -29,7 +29,8 @@ import {
   Layers, 
   Zap, 
   Compass,
-  Download
+  Download,
+  Key
 } from 'lucide-react';
 
 export const AiRoadmapAssistant: React.FC = () => {
@@ -38,6 +39,20 @@ export const AiRoadmapAssistant: React.FC = () => {
   const [projectType, setProjectType] = useState<ProjectType>('saas');
   const [budgetType, setBudgetType] = useState<BudgetType>('free-only');
   const [selectedSubs, setSelectedSubs] = useState<string[]>(['cursor-pro', 'claude-pro']);
+  
+  // Gemini API Key State (Optional for live LLM inference)
+  const [apiKey, setApiKey] = useState(() => {
+    return localStorage.getItem('gemini_api_key') || '';
+  });
+  const [showKeyInput, setShowKeyInput] = useState(false);
+
+  useEffect(() => {
+    if (apiKey) {
+      localStorage.setItem('gemini_api_key', apiKey.trim());
+    } else {
+      localStorage.removeItem('gemini_api_key');
+    }
+  }, [apiKey]);
 
   // Roadmap State
   const [roadmap, setRoadmap] = useState<ProjectRoadmap | null>(() => 
@@ -66,7 +81,7 @@ export const AiRoadmapAssistant: React.FC = () => {
     );
   };
 
-  const handleSendMessage = (textToSend?: string) => {
+  const handleSendMessage = async (textToSend?: string) => {
     const messageText = textToSend || userInput;
     if (!messageText.trim()) return;
 
@@ -81,8 +96,18 @@ export const AiRoadmapAssistant: React.FC = () => {
     if (!textToSend) setUserInput('');
     setIsTyping(true);
 
-    setTimeout(() => {
-      const answer = answerAssistantQuestion(messageText, selectedSubs);
+    try {
+      const answer = await queryAiAssistant(
+        messageText,
+        {
+          title: projectTitle || roadmap?.title || 'AI Project',
+          type: projectType,
+          budget: budgetType,
+          subs: selectedSubs
+        },
+        apiKey
+      );
+
       const assistantMsg: AssistantChatMessage = {
         id: `msg-${Date.now() + 1}`,
         sender: 'assistant',
@@ -95,8 +120,11 @@ export const AiRoadmapAssistant: React.FC = () => {
         ]
       };
       setChatMessages(prev => [...prev, assistantMsg]);
+    } catch (err) {
+      console.error('Error querying assistant:', err);
+    } finally {
       setIsTyping(false);
-    }, 600);
+    }
   };
 
   const copyRoadmapToClipboard = () => {
@@ -538,21 +566,82 @@ export const AiRoadmapAssistant: React.FC = () => {
 
       {/* Interactive Chat Assistant: "Ask the Credit Architect" */}
       <div className="rounded-3xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 sm:p-8 shadow-sm space-y-6">
-        <div className="flex items-center justify-between border-b border-gray-100 dark:border-gray-800 pb-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-gray-100 dark:border-gray-800 pb-4">
           <div className="flex items-center gap-2.5">
             <div className="h-9 w-9 rounded-xl bg-purple-500 text-white flex items-center justify-center font-bold shadow-sm">
               <Bot className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="font-bold text-base text-gray-900 dark:text-white">
-                Ask the Credit Architect
-              </h3>
+              <div className="flex items-center gap-2">
+                <h3 className="font-bold text-base text-gray-900 dark:text-white">
+                  Ask the Credit Architect
+                </h3>
+                {apiKey ? (
+                  <span className="inline-flex items-center gap-1 text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800">
+                    <Zap className="w-3 h-3 text-emerald-500" />
+                    <span>Live Gemini 1.5 Active</span>
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center gap-1 text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-sky-100 dark:bg-sky-950 text-sky-700 dark:text-sky-300 border border-sky-300 dark:border-sky-800">
+                    <span>Built-In Smart Engine</span>
+                  </span>
+                )}
+              </div>
               <p className="text-xs text-gray-500 dark:text-gray-400">
                 Instant advice on rate limits, model workarounds, and how to never run out of credits.
               </p>
             </div>
           </div>
+
+          <button
+            onClick={() => setShowKeyInput(!showKeyInput)}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-gray-200 dark:border-gray-700 text-xs text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors self-start sm:self-auto"
+          >
+            <Key className="w-3.5 h-3.5 text-amber-500" />
+            <span>{apiKey ? 'API Key Connected' : 'Connect Free Gemini Key (Optional)'}</span>
+          </button>
         </div>
+
+        {/* Optional Gemini API Key Drawer */}
+        {showKeyInput && (
+          <div className="p-4 rounded-2xl bg-amber-50/70 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900/60 space-y-2 text-xs">
+            <div className="flex items-center justify-between">
+              <span className="font-bold text-amber-900 dark:text-amber-200 flex items-center gap-1.5">
+                <Key className="w-4 h-4 text-amber-600" />
+                <span>Google Gemini API Key (100% Free - 1,500 requests/day):</span>
+              </span>
+              <a
+                href="https://aistudio.google.com/app/apikey"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-amber-700 dark:text-amber-400 font-semibold underline flex items-center gap-1"
+              >
+                <span>Get Free Key in 30s</span>
+                <ExternalLink className="w-3 h-3" />
+              </a>
+            </div>
+            <div className="flex gap-2">
+              <input
+                type="password"
+                value={apiKey}
+                onChange={(e) => setApiKey(e.target.value)}
+                placeholder="AIzaSy... (stored locally in browser, never sent to third-party servers)"
+                className="flex-1 px-3 py-2 rounded-xl border border-amber-200 dark:border-amber-800 bg-white dark:bg-gray-900 font-mono text-xs outline-none focus:ring-2 focus:ring-amber-500"
+              />
+              {apiKey && (
+                <button
+                  onClick={() => setApiKey('')}
+                  className="px-3 py-2 rounded-xl bg-amber-200 dark:bg-amber-900/60 text-amber-900 dark:text-amber-200 font-semibold text-xs"
+                >
+                  Clear
+                </button>
+              )}
+            </div>
+            <p className="text-[11px] text-amber-800/80 dark:text-amber-300/80">
+              Entering a free Google AI Studio key enables real-time live LLM inference with Gemini 1.5 Flash. Leaving it blank uses our fast built-in credit intelligence engine.
+            </p>
+          </div>
+        )}
 
         {/* Quick Suggestion Chips */}
         <div className="flex items-center gap-2 overflow-x-auto pb-1 text-xs">

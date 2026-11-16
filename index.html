@@ -2,13 +2,40 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230284c7' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='10'/><path d='m12 6 4 6h-8l4 6'/></svg>" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AI Credit Guide — Free Tiers, Usage Credits & Pricing of AI Tools</title>
-    <meta name="description" content="Discover AI tools, understand free credit limits and paid tiers, and learn how to use models effectively without wasting credits." />
+    <link rel="icon" type="image/png" href="./favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <title>Credit Guider — AI Credit & Free Tier Guide</title>
+    <meta name="description" content="Discover AI tools, understand free credit limits, calculate monthly token expenses, and generate 100% free project roadmaps." />
+    
+    <!-- PWA Web App Manifest -->
+    <link rel="manifest" href="./manifest.json" />
+    <meta name="theme-color" content="#0284c7" />
+
+    <!-- iOS Native App Emulation -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="CreditGuider" />
+    <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Credit Guider — AI Credit & Free Tier Guide" />
+    <meta property="og:description" content="Know before you spend. Discover which AI tools are free and build projects with zero budget." />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="./icon-512.png" />
   </head>
-  <body class="bg-gray-50 text-gray-900 dark:bg-gray-950 dark:text-gray-100 antialiased">
+  <body class="bg-gray-50 text-gray-900 dark:bg-gray-950 dark:text-gray-100 antialiased select-none-webkit">
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+
+    <!-- Register PWA Service Worker -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('./sw.js')
+            .then((reg) => console.log('PWA ServiceWorker registered:', reg.scope))
+            .catch((err) => console.log('PWA ServiceWorker registration failed:', err));
+        });
+      }
+    </script>
   </body>
 </html>

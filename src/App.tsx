@@ -3,6 +3,7 @@ import { Navbar } from './components/Navbar';
 import { ToolCard } from './components/ToolCard';
 import { ToolDetailModal } from './components/ToolDetailModal';
 import { AiRoadmapAssistant } from './components/AiRoadmapAssistant';
+import { InstallAppModal } from './components/InstallAppModal';
 import { AI_TOOLS_DATA } from './data/toolsData';
 import { NEWS_OFFERS_DATA, CREDIT_GUIDE_ARTICLES } from './data/newsData';
 import { AITool, ToolCategory } from './types';
@@ -19,6 +20,7 @@ import {
   TrendingDown, 
   Sliders, 
   ArrowRight,
+  Smartphone,
   Download,
   Github
 } from 'lucide-react';
@@ -47,6 +49,35 @@ export const App: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<ToolCategory>('All');
   const [selectedTool, setSelectedTool] = useState<AITool | null>(null);
+
+  // PWA Install State
+  const [isInstallModalOpen, setIsInstallModalOpen] = useState(false);
+  const [canInstallNative, setCanInstallNative] = useState(false);
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+
+  useEffect(() => {
+    const handleBeforeInstall = (e: any) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+      setCanInstallNative(true);
+    };
+
+    window.addEventListener('beforeinstallprompt', handleBeforeInstall);
+    return () => window.removeEventListener('beforeinstallprompt', handleBeforeInstall);
+  }, []);
+
+  const handleNativeInstall = async () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      if (outcome === 'accepted') {
+        setCanInstallNative(false);
+        setDeferredPrompt(null);
+      }
+    } else {
+      setIsInstallModalOpen(true);
+    }
+  };
 
   // Calculator State
   const [calcModel, setCalcModel] = useState('gemini-flash');
@@ -130,6 +161,7 @@ export const App: React.FC = () => {
         setCurrentTab={setCurrentTab}
         darkMode={darkMode}
         setDarkMode={setDarkMode}
+        onOpenInstallModal={() => setIsInstallModalOpen(true)}
       />
 
       <main className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 py-8">
@@ -187,6 +219,13 @@ export const App: React.FC = () => {
                   >
                     <Calculator className="w-3.5 h-3.5 text-sky-500" />
                     <span>Calculate Monthly Cost</span>
+                  </button>
+                  <button
+                    onClick={handleNativeInstall}
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm transition-all"
+                  >
+                    <Smartphone className="w-3.5 h-3.5" />
+                    <span>Install As App (Safe)</span>
                   </button>
                 </div>
               </div>
@@ -573,6 +612,14 @@ export const App: React.FC = () => {
       <ToolDetailModal
         tool={selectedTool}
         onClose={() => setSelectedTool(null)}
+      />
+
+      {/* PWA Install Modal */}
+      <InstallAppModal
+        isOpen={isInstallModalOpen}
+        onClose={() => setIsInstallModalOpen(false)}
+        canInstallNative={canInstallNative}
+        onNativeInstall={handleNativeInstall}
       />
     </div>
   );
