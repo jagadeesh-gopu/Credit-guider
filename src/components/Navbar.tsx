@@ -1,9 +1,9 @@
 import React from 'react';
-import { Coins, Compass, Calculator, BookOpen, Newspaper, Moon, Sun, Download, Github } from 'lucide-react';
+import { Coins, Compass, Calculator, Sparkles, BookOpen, Newspaper, Moon, Sun, Download, Github } from 'lucide-react';
 
 interface NavbarProps {
-  currentTab: 'explore' | 'calculator' | 'guides' | 'news';
-  setCurrentTab: (tab: 'explore' | 'calculator' | 'guides' | 'news') => void;
+  currentTab: 'explore' | 'calculator' | 'assistant' | 'guides' | 'news';
+  setCurrentTab: (tab: 'explore' | 'calculator' | 'assistant' | 'guides' | 'news') => void;
   darkMode: boolean;
   setDarkMode: (val: boolean) => void;
 }
@@ -60,6 +60,18 @@ export const Navbar: React.FC<NavbarProps> = ({
           >
             <Calculator className="w-4 h-4" />
             <span>Cost Calculator</span>
+          </button>
+
+          <button
+            onClick={() => setCurrentTab('assistant')}
+            className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+              currentTab === 'assistant'
+                ? 'bg-gradient-to-r from-sky-500 to-indigo-600 text-white shadow-sm'
+                : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
+            }`}
+          >
+            <Sparkles className="w-4 h-4 text-amber-400" />
+            <span>AI Roadmap Assistant</span>
           </button>
 
           <button
@@ -134,11 +146,19 @@ export const Navbar: React.FC<NavbarProps> = ({
         </button>
         <button
           onClick={() => setCurrentTab('calculator')}
-          className={`flex-1 py-1.5 text-xs font-medium text-center rounded-md ${
+          className={`flex-1 py-1.5 text-xs font-medium text-center rounded-md whitespace-nowrap px-2 ${
             currentTab === 'calculator' ? 'bg-sky-500 text-white font-semibold' : 'text-gray-600 dark:text-gray-400'
           }`}
         >
           Calculator
+        </button>
+        <button
+          onClick={() => setCurrentTab('assistant')}
+          className={`flex-1 py-1.5 text-xs font-medium text-center rounded-md whitespace-nowrap px-2 ${
+            currentTab === 'assistant' ? 'bg-indigo-600 text-white font-semibold' : 'text-gray-600 dark:text-gray-400'
+          }`}
+        >
+          AI Assistant
         </button>
         <button
           onClick={() => setCurrentTab('guides')}

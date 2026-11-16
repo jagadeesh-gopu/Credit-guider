@@ -12,6 +12,10 @@
 
 ## 🚀 Features
 
+- **🤖 AI Project & Credit Roadmap Assistant**: Enter any project idea (Full-Stack SaaS, Mobile App, AI Agent, Video Studio) and generate a tailored 4-phase development roadmap.
+  - **100% Free Credits Mode**: Orchestrates generous developer free tiers (Google AI Studio 1.5K RPD, Groq 14.4K RPD, Supabase, Vercel) for \$0.00 total spend.
+  - **Hybrid Subscription Mode**: Intelligently leverages paid plans (Claude Pro, Cursor, ChatGPT Plus) for heavy architecture while offloading repetitive pipelines to free tiers to preserve monthly quotas.
+  - **Interactive Chat Assistant**: Instant advice on rolling reset windows, model fallbacks, and token conservation.
 - **🔍 Explore 20+ Leading AI Tools**: Deep-dive breakdowns for ChatGPT, Claude, Google Gemini, Midjourney, Cursor, DeepSeek, ElevenLabs, Runway, Suno, GitHub Copilot, and more.
 - **🪙 Verified Free Tiers & Credit Quotas**: Uncover exact rate limits (RPM/TPM/RPD), rolling reset windows (3-5 hr resets vs daily UTC), and what you can build without spending \$1.
 - **🧮 Interactive Token & Cost Calculator**: Simulate monthly token volume, estimate API costs across models (Gemini Flash, GPT-4o Mini, Claude Sonnet, DeepSeek-V3, Groq), and see if your app is 100% covered under free tiers.

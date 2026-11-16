@@ -66,3 +66,59 @@ export interface CreditGuideArticle {
     content: string;
   }[];
 }
+
+export type ProjectType = 
+  | 'saas'
+  | 'mobile'
+  | 'chatbot'
+  | 'content'
+  | 'extension'
+  | 'research';
+
+export type BudgetType = 'free-only' | 'hybrid';
+
+export interface UserSubscription {
+  id: string;
+  name: string;
+  category: string;
+  cost: string;
+  bestUsedFor: string;
+  freeAlternative: string;
+}
+
+export interface RoadmapTool {
+  name: string;
+  role: string;
+  planType: '100% Free' | 'Subscription Plan' | 'Freemium';
+  quotaOrCost: string;
+  link: string;
+}
+
+export interface RoadmapPhase {
+  phaseNumber: number;
+  phaseName: string;
+  goal: string;
+  recommendedTools: RoadmapTool[];
+  actionSteps: string[];
+  creditOptimization: string[];
+}
+
+export interface ProjectRoadmap {
+  id: string;
+  title: string;
+  projectType: ProjectType;
+  budgetType: BudgetType;
+  summary: string;
+  totalCostEstimate: string;
+  phases: RoadmapPhase[];
+  goldenRules: string[];
+  pitfallsToAvoid: string[];
+}
+
+export interface AssistantChatMessage {
+  id: string;
+  sender: 'user' | 'assistant';
+  text: string;
+  timestamp: string;
+  suggestedFollowUps?: string[];
+}

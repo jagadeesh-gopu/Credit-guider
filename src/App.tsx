@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Navbar } from './components/Navbar';
 import { ToolCard } from './components/ToolCard';
 import { ToolDetailModal } from './components/ToolDetailModal';
+import { AiRoadmapAssistant } from './components/AiRoadmapAssistant';
 import { AI_TOOLS_DATA } from './data/toolsData';
 import { NEWS_OFFERS_DATA, CREDIT_GUIDE_ARTICLES } from './data/newsData';
 import { AITool, ToolCategory } from './types';
@@ -34,7 +35,7 @@ const CATEGORIES: ToolCategory[] = [
 ];
 
 export const App: React.FC = () => {
-  const [currentTab, setCurrentTab] = useState<'explore' | 'calculator' | 'guides' | 'news'>('explore');
+  const [currentTab, setCurrentTab] = useState<'explore' | 'calculator' | 'assistant' | 'guides' | 'news'>('explore');
   const [darkMode, setDarkMode] = useState<boolean>(() => {
     if (typeof window !== 'undefined') {
       return localStorage.getItem('theme') === 'dark' ||
@@ -168,6 +169,25 @@ export const App: React.FC = () => {
                     <Sparkles className="w-4 h-4 text-sky-500" />
                     <span>Zero Ad Bias</span>
                   </div>
+                </div>
+
+                {/* AI Assistant Callout CTA */}
+                <div className="pt-2 flex flex-wrap items-center gap-3">
+                  <button
+                    onClick={() => setCurrentTab('assistant')}
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-700 hover:to-indigo-700 text-white shadow-sm transition-all"
+                  >
+                    <Sparkles className="w-3.5 h-3.5" />
+                    <span>Generate $0 Free Project Roadmap</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </button>
+                  <button
+                    onClick={() => setCurrentTab('calculator')}
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                  >
+                    <Calculator className="w-3.5 h-3.5 text-sky-500" />
+                    <span>Calculate Monthly Cost</span>
+                  </button>
                 </div>
               </div>
             </div>
@@ -361,7 +381,12 @@ export const App: React.FC = () => {
           </div>
         )}
 
-        {/* TAB 3: GUIDES */}
+        {/* TAB 3: AI ROADMAP ASSISTANT */}
+        {currentTab === 'assistant' && (
+          <AiRoadmapAssistant />
+        )}
+
+        {/* TAB 4: GUIDES */}
         {currentTab === 'guides' && (
           <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in duration-200">
             <div className="text-center space-y-2">
